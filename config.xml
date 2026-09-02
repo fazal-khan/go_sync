@@ -1,5 +1,24 @@
 <config>
     <table name="test_sync">
         <database_name>test_db</database_name>
+        
+        <id-column>id</id-column>
+        <tracking-column>updated_at</tracking-column>
+        <batch-size>50</batch-size>
+        <use-skip>false</use-skip> 
+        <max-records>100</max-records>
+        <wait-ms>100</wait-ms>
+        <cron>*/1 * * * *</cron>
+
+        <query>
+            <![CDATA[
+            SELECT id, fname, lname, email, updated_at,  UNIX_TIMESTAMP(Now()) as unix_ts_in_secs
+            FROM test_db 
+            WHERE updated_at > :last_ts
+            ORDER BY updated_at ASC 
+            LIMIT :max_records
+        ]]>
+        </query>
+
     </table>
 </config>
