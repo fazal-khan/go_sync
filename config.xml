@@ -1,0 +1,5 @@
+<config>
+    <table name="test_sync">
+        <database_name>test_db</database_name>
+    </table>
+</config>

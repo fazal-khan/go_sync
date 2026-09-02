@@ -2,7 +2,9 @@ package main
 
 import (
 	"log"
+	"log/slog"
 
+	"github.com/fazal-khan/go_sync/internal/logger"
 	"github.com/joho/godotenv"
 )
 
@@ -16,4 +18,11 @@ func main() {
 	}
 
 	log.Println("environment variables loaded successfully")
+
+	initLogger()
+	slog.Info("Logger initialized successfully")
+}
+
+func initLogger() {
+	logger.NewConsoleLogger()
 }
