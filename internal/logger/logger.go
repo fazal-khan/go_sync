@@ -35,8 +35,8 @@ func New(fileName string, maxSizeMB int, maxBackups int, maxAgeDays int) *slog.L
 
 func NewConsoleLogger() *slog.Logger {
 	handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level:     slog.LevelDebug,
-		AddSource: true, // Optional: Includes the file name and line number
+		Level: slog.LevelDebug,
+		// AddSource: true, // Optional: Includes the file name and line number
 	})
 
 	logger := slog.New(handler)

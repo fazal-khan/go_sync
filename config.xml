@@ -5,7 +5,7 @@
         <id-column>id</id-column>
         <tracking-column>updated_at</tracking-column>
         <batch-size>50</batch-size>
-        <use-skip>false</use-skip> 
+        <use-skip>false</use-skip>
         <max-records>100</max-records>
         <wait-ms>100</wait-ms>
         <cron>*/1 * * * *</cron>
@@ -23,9 +23,9 @@
         <filter>
             <!-- row current record -->
             <mutate row="_row">
-                
+
                 <copy-value from="id" to="_id" in="root" />
-                <copy-value from="id" to ="last_record_id"/>
+                <copy-value from="id" to="last_record_id" />
 
                 <remove-fields ignore-case="true">
                     <field>id</field>
