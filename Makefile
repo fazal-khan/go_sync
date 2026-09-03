@@ -2,7 +2,7 @@
 BINARY_NAME=gosync
 MAIN_PACKAGE=./cmd
 
-.PHONY: all build run test clean tool help
+.PHONY: all build run test coverage clean tool help
 
 # Default target runs when you just type 'make'
 all: test build
@@ -21,6 +21,14 @@ run: build
 test:
 	@echo "Running tests..."
 	go test -v ./...
+
+## coverage: Run tests with coverage report
+coverage:
+	@echo "Running tests with coverage..."
+	go test -v -coverprofile=coverage.out ./...
+	@echo "\n--- Coverage Summary ---"
+	@go tool cover -func=coverage.out
+	@echo "\nHTML report: go tool cover -html=coverage.out"
 
 ## clean: Remove build artifacts
 clean:

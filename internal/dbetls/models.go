@@ -16,7 +16,7 @@ type Table struct {
 	Query          Query  `xml:"query"`
 	Filter         Filter `xml:"filter"`
 	Output         Output `xml:"output"`
-	Name           string `xml:"_name"`
+	Name           string `xml:"name,attr"`
 }
 
 type Filter struct {
@@ -28,7 +28,7 @@ type Mutate struct {
 	RemoveFields    RemoveFields    `xml:"remove-fields"`
 	AddFields       AddFields       `xml:"add-fields"`
 	LowercaseFields LowercaseFields `xml:"lowercase-fields"`
-	Row             string          `xml:"_row"`
+	Row             string          `xml:"row,attr"`
 }
 
 type AddFields struct {
@@ -36,25 +36,25 @@ type AddFields struct {
 }
 
 type Field struct {
-	Key   string `xml:"_key"`
-	Value string `xml:"_value"`
+	Key   string `xml:"key,attr"`
+	Value string `xml:"value,attr"`
 }
 
 type CopyValue struct {
-	From string  `xml:"_from"`
-	To   string  `xml:"_to"`
-	In   *string `xml:"_in,omitempty"`
+	From string `xml:"from,attr"`
+	To   string `xml:"to,attr"`
+	In   string `xml:"in,attr"`
 }
 
 type LowercaseFields struct {
 	Field         []string `xml:"field"`
-	For           string   `xml:"_for"`
-	CaseSentitive string   `xml:"_case-sentitive"`
+	For           string   `xml:"for,attr"`
+	CaseSentitive string   `xml:"case-sentitive,attr"`
 }
 
 type RemoveFields struct {
 	Field      []string `xml:"field"`
-	IgnoreCase string   `xml:"_ignore-case"`
+	IgnoreCase string   `xml:"ignore-case,attr"`
 }
 
 type Output struct {
@@ -64,25 +64,25 @@ type Output struct {
 	TLS        TLS    `xml:"tls"`
 	SkipOutput string `xml:"skip-output"`
 	Result     Result `xml:"result"`
-	Name       string `xml:"_name"`
-	Type       string `xml:"_type"`
+	Name       string `xml:"name,attr"`
+	Type       string `xml:"type,attr"`
 }
 
 type Auth struct {
-	User     string `xml:"_user"`
-	Password string `xml:"_password"`
+	User     string `xml:"user,attr"`
+	Password string `xml:"password,attr"`
 }
 
 type Result struct {
-	Bulk  string `xml:"_bulk"`
-	Cdata string `xml:"__cdata"`
+	Bulk  string `xml:"bulk,attr"`
+	Cdata string `xml:",chardata"`
 }
 
 type TLS struct {
-	Verify  string `xml:"_verify"`
-	Enabled string `xml:"_enabled"`
+	Verify  string `xml:"verify,attr"`
+	Enabled string `xml:"enabled,attr"`
 }
 
 type Query struct {
-	Cdata string `xml:"__cdata"`
+	Cdata string `xml:",chardata"`
 }

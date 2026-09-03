@@ -49,7 +49,7 @@
 
         <output name="test_sync" type="api">
             <target>elasticsearch</target>
-            <url>http://demo.com/api/v1/test_sync</url>
+            <url>${env.test_sync.URL}</url>
             <auth user="${env.test_sync.USER}" password="${env.test_sync.PASSWORD}" />
             <tls verify="false" enabled="false" />
             <skip-output>false</skip-output>
