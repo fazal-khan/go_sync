@@ -1,7 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <config>
     <table name="test_sync">
         <database_name>test_db</database_name>
-        
         <id-column>id</id-column>
         <tracking-column>updated_at</tracking-column>
         <batch-size>50</batch-size>
@@ -16,9 +16,54 @@
             FROM test_db 
             WHERE updated_at > :last_ts
             ORDER BY updated_at ASC 
-            LIMIT :max_records
         ]]>
         </query>
+
+
+        <filter>
+            <!-- row current record -->
+            <mutate row="_row">
+                
+                <copy-value from="id" to="_id" in="root" />
+                <copy-value from="id" to ="last_record_id"/>
+
+                <remove-fields ignore-case="true">
+                    <field>id</field>
+                    <field>unix_ts_in_secs</field>
+                </remove-fields>
+
+                <add-fields>
+                    <field key="butype" value="AEM" /> <!-- can be dynamic using _row-->
+                    <field key="bucode" value="A12789E" />
+                </add-fields>
+
+                <!-- convert given row with keys below, the values are converted to lowercase -->
+                <!-- _row[field] = lowercase(_row[field])-->
+                <lowercase-fields for="value" case-sentitive="false">
+                    <field>abc</field>
+                    <field>def</field>
+                </lowercase-fields>
+
+            </mutate>
+        </filter>
+
+        <output name="test_sync" type="api">
+            <target>elasticsearch</target>
+            <url>http://demo.com/api/v1/test_sync</url>
+            <auth user="${env.test_sync.USER}" password="${env.test_sync.PASSWORD}" />
+            <tls verify="false" enabled="false" />
+            <skip-output>false</skip-output>
+            <result bulk="true">
+                <![CDATA[
+                {
+                    "index" : {
+                        "_index": "test_sync", 
+                        "_id": "${row.id}",
+                    }
+                }
+                ]]>
+            </result>
+        </output>
 
     </table>
 </config>
