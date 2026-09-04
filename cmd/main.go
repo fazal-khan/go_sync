@@ -45,7 +45,7 @@ func initServices(appctx *core.AppCtx) error {
 
 	appctx.Logger.Info("initializing services")
 	// Initialize DBService
-	dbService, err := dbetls.NewDBService(appctx)
+	dbService, err := dbetls.NewDBService(appctx, newOutputter())
 	if err != nil {
 		appctx.Logger.Error("failed to initialize DBService", slog.Any("error", err))
 		return err

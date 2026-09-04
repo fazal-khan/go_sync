@@ -3,6 +3,7 @@ package util
 import (
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -36,4 +37,13 @@ func SubstituteEnvVars(s string) string {
 
 		return os.Getenv(envKey)
 	})
+}
+
+// ParseNonNegativeInt parses s as a non-negative integer, returning 0 for
+// empty, non-numeric, or negative input.
+func ParseNonNegativeInt(s string) int {
+	if n, err := strconv.Atoi(strings.TrimSpace(s)); err == nil && n > 0 {
+		return n
+	}
+	return 0
 }

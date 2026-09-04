@@ -111,3 +111,25 @@ func TestGetenv_EmptyString(t *testing.T) {
 		t.Errorf("got %q, want %q", got, want)
 	}
 }
+
+func TestParseNonNegativeInt(t *testing.T) {
+	cases := map[string]int{
+		"100":  100,
+		"  50 ": 50,
+		"1":    1,
+		"200":  200,
+		"0":    0,
+		"-5":   0,
+		"-3":   0,
+		"-1":   0,
+		"abc":  0,
+		"x":    0,
+		"nope": 0,
+		"":     0,
+	}
+	for in, want := range cases {
+		if got := ParseNonNegativeInt(in); got != want {
+			t.Errorf("ParseNonNegativeInt(%q) = %d, want %d", in, got, want)
+		}
+	}
+}
