@@ -52,3 +52,41 @@ func TestFile_MarshalError(t *testing.T) {
 		dbetls.Output{URL: "/tmp/should_not_exist.json", Name: "tbl"},
 	)
 }
+
+func TestFile_WriteToReadOnlyDir(t *testing.T) {
+	dir := t.TempDir()
+	readOnlyDir := filepath.Join(dir, "readonly")
+	os.MkdirAll(readOnlyDir, 0755)
+	os.Chmod(readOnlyDir, 0555)
+	defer os.Chmod(readOnlyDir, 0755)
+	defer os.RemoveAll(dir)
+
+	adapter := NewFileAdapter(newTestLogger())
+	adapter.Output(
+		[]map[string]any{{"id": "1"}},
+		dbetls.Output{Target: "file", URL: filepath.Join(readOnlyDir, "out.json"), Name: "tbl"},
+	)
+}
+
+func TestFile_WriteToNestedPath(t *testing.T) {
+	dir := t.TempDir()
+	nestedPath := filepath.Join(dir, "nested", "deep", "out.json")
+
+	adapter := NewFileAdapter(newTestLogger())
+	os.MkdirAll(filepath.Dir(nestedPath), 0755)
+	adapter.Output(
+		[]map[string]any{{"id": "1", "name": "test"}},
+		dbetls.Output{Target: "file", URL: nestedPath, Name: "tbl"},
+	)
+
+	data, err := os.ReadFile(nestedPath)
+	if err != nil {
+		t.Fatalf("failed to read nested output file: %v", err)
+	}
+	if len(data) == 0 {
+		t.Fatal("nested output file is empty")
+	}
+	if string(data) != "[\n  {\n    \"id\": \"1\",\n    \"name\": \"test\"\n  }\n]" {
+		t.Errorf("unexpected content: %s", string(data))
+	}
+}
