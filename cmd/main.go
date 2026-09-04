@@ -25,7 +25,10 @@ func main() {
 	}
 	slog.Info("environment variables loaded successfully")
 
-	initServices(appctx)
+	if err := initServices(appctx); err != nil {
+		slog.Error("failed to initialize services", "error", err)
+		os.Exit(1)
+	}
 
 	appctx.Cron.Start()
 

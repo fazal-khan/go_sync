@@ -6,7 +6,7 @@
         <tracking-column>updated_at</tracking-column>
         <batch-size>50</batch-size>
         <use-skip>false</use-skip>
-        <max-records>100</max-records>
+        <max-records>-1</max-records>
         <wait-ms>100</wait-ms>
         <cron>*/1 * * * *</cron>
 
@@ -22,7 +22,7 @@
 
         <filter>
             <!-- row current record -->
-            <mutate row="_row">
+            <mutate row="row">
 
                 <copy-value from="id" to="_id" in="root" />
                 <copy-value from="id" to="last_record_id" />
@@ -33,12 +33,12 @@
                 </remove-fields>
 
                 <add-fields>
-                    <field key="butype" value="AEM" /> <!-- can be dynamic using _row-->
+                    <field key="butype" value="AEM" /> <!-- can be dynamic using row-->
                     <field key="bucode" value="A12789E" />
                 </add-fields>
 
                 <!-- convert given row with keys below, the values are converted to lowercase -->
-                <!-- _row[field] = lowercase(_row[field])-->
+                <!-- row[field] = lowercase(row[field])-->
                 <lowercase-fields for="value" case-sentitive="false">
                     <field>abc</field>
                     <field>def</field>
@@ -61,6 +61,7 @@
                         "_id": "${row.id}",
                     }
                 }
+                json_encode(row)
                 ]]>
             </result>
         </output>

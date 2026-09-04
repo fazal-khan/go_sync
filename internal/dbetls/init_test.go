@@ -87,11 +87,11 @@ func TestDecodeValidXML(t *testing.T) {
 		t.Fatalf("failed to decode valid XML: %v", err)
 	}
 
-	if len(config.Table) != 1 {
-		t.Fatalf("expected 1 table, got %d", len(config.Table))
+	if len(config.Tables) != 1 {
+		t.Fatalf("expected 1 table, got %d", len(config.Tables))
 	}
 
-	tbl := config.Table[0]
+	tbl := config.Tables[0]
 	if tbl.DatabaseName != "mydb" {
 		t.Errorf("DatabaseName = %q, want %q", tbl.DatabaseName, "mydb")
 	}
@@ -137,7 +137,7 @@ func TestDecodeFilterFields(t *testing.T) {
 		t.Fatalf("failed to decode XML: %v", err)
 	}
 
-	mutate := config.Table[0].Filter.Mutate
+	mutate := config.Tables[0].Filter.Mutate
 	if mutate.Row != "_row" {
 		t.Errorf("Mutate.Row = %q, want %q", mutate.Row, "_row")
 	}
@@ -188,7 +188,7 @@ func TestEnvSubstitution(t *testing.T) {
 	// Apply env substitution
 	substituteConfigEnvVars(&config)
 
-	tbl := config.Table[0]
+	tbl := config.Tables[0]
 
 	// URL should have env vars replaced but row.id untouched
 	wantURL := "http://search.example.com:9200/my_index"
@@ -230,11 +230,11 @@ func TestInitFromFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Init failed: %v", err)
 	}
-	if len(config.Table) != 1 {
-		t.Fatalf("expected 1 table, got %d", len(config.Table))
+	if len(config.Tables) != 1 {
+		t.Fatalf("expected 1 table, got %d", len(config.Tables))
 	}
-	if config.Table[0].DatabaseName != "mydb" {
-		t.Errorf("DatabaseName = %q, want %q", config.Table[0].DatabaseName, "mydb")
+	if config.Tables[0].DatabaseName != "mydb" {
+		t.Errorf("DatabaseName = %q, want %q", config.Tables[0].DatabaseName, "mydb")
 	}
 }
 

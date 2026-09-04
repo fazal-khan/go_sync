@@ -27,7 +27,7 @@ func Init(ctx *core.AppCtx, file string) (*Config, error) {
 	substituteConfigEnvVars(&config)
 
 	ctx.Logger.Info("config.xml loaded successfully")
-	ctx.Logger.Info("config details", "database_name", config.Table[0].DatabaseName)
+	ctx.Logger.Info("config details", "database_name", config.Tables[0].DatabaseName)
 
 	return &config, nil
 }
@@ -35,8 +35,8 @@ func Init(ctx *core.AppCtx, file string) (*Config, error) {
 // substituteConfigEnvVars walks known string fields in the Config and replaces
 // ${...} placeholders with environment variable values.
 func substituteConfigEnvVars(cfg *Config) {
-	for i := range cfg.Table {
-		t := &cfg.Table[i]
+	for i := range cfg.Tables {
+		t := &cfg.Tables[i]
 
 		// Output fields
 		t.Output.URL = util.SubstituteEnvVars(t.Output.URL)

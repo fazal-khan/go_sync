@@ -1,7 +1,7 @@
 package dbetls
 
 type Config struct {
-	Table []Table `xml:"table"`
+	Tables []Table `xml:"table"`
 }
 
 type Table struct {
