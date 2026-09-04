@@ -1,11 +1,11 @@
 package adapters
 
 import (
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
-	"testing"
-	"log/slog"
 	"os"
+	"testing"
 
 	"github.com/fazal-khan/go_sync/internal/dbetls"
 )

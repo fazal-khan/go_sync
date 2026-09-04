@@ -1,9 +1,9 @@
 package core
 
 import (
+	"log/slog"
 	"os"
 	"testing"
-	"log/slog"
 
 	cron "github.com/netresearch/go-cron"
 )

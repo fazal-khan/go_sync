@@ -11,8 +11,8 @@ import (
 )
 
 type ElasticsearchAdapter struct {
-	http    *HTTPClientAdapter
-	logger  *slog.Logger
+	http   *HTTPClientAdapter
+	logger *slog.Logger
 }
 
 func NewElasticsearchAdapter(http *HTTPClientAdapter, logger *slog.Logger) *ElasticsearchAdapter {

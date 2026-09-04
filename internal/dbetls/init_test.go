@@ -13,7 +13,7 @@ import (
 const validXML = `<?xml version="1.0" encoding="UTF-8"?>
 <config>
     <table name="test_table">
-        <database_name>mydb</database_name>
+        <db_name>mydb</db_name>
         <id-column>id</id-column>
         <tracking-column>updated_at</tracking-column>
         <batch-size>100</batch-size>
@@ -92,8 +92,8 @@ func TestDecodeValidXML(t *testing.T) {
 	}
 
 	tbl := config.Tables[0]
-	if tbl.DatabaseName != "mydb" {
-		t.Errorf("DatabaseName = %q, want %q", tbl.DatabaseName, "mydb")
+	if tbl.DBName != "mydb" {
+		t.Errorf("DBName = %q, want %q", tbl.DBName, "mydb")
 	}
 	if tbl.IDColumn != "id" {
 		t.Errorf("IDColumn = %q, want %q", tbl.IDColumn, "id")
@@ -233,8 +233,8 @@ func TestInitFromFile(t *testing.T) {
 	if len(config.Tables) != 1 {
 		t.Fatalf("expected 1 table, got %d", len(config.Tables))
 	}
-	if config.Tables[0].DatabaseName != "mydb" {
-		t.Errorf("DatabaseName = %q, want %q", config.Tables[0].DatabaseName, "mydb")
+	if config.Tables[0].DBName != "mydb" {
+		t.Errorf("DatabaseName = %q, want %q", config.Tables[0].DBName, "mydb")
 	}
 }
 

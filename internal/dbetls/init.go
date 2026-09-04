@@ -25,9 +25,7 @@ func Init(ctx *core.AppCtx, file string) (*Config, error) {
 
 	// Substitute environment variables in decoded config strings
 	substituteConfigEnvVars(&config)
-
 	ctx.Logger.Info("config.xml loaded successfully")
-	ctx.Logger.Info("config details", "database_name", config.Tables[0].DatabaseName)
 
 	return &config, nil
 }

@@ -5,7 +5,10 @@ type Config struct {
 }
 
 type Table struct {
-	DatabaseName   string `xml:"database_name"`
+	Name           string `xml:"name,attr"`
+	DBType         string `xml:"db_type"`
+	DBName         string `xml:"db_name"`
+	DBURL          string `xml:"db_url"`
 	IDColumn       string `xml:"id-column"`
 	TrackingColumn string `xml:"tracking-column"`
 	BatchSize      string `xml:"batch-size"`
@@ -16,7 +19,6 @@ type Table struct {
 	Query          Query  `xml:"query"`
 	Filter         Filter `xml:"filter"`
 	Output         Output `xml:"output"`
-	Name           string `xml:"name,attr"`
 }
 
 type Filter struct {

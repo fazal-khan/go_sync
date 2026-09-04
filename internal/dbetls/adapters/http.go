@@ -9,8 +9,8 @@ import (
 )
 
 type HTTPClientAdapter struct {
-	client  *http.Client
-	logger  *slog.Logger
+	client *http.Client
+	logger *slog.Logger
 }
 
 func NewHTTPClientAdapter(logger *slog.Logger) *HTTPClientAdapter {

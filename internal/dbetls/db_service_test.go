@@ -52,10 +52,10 @@ func TestDBService_ImplementsInterface(t *testing.T) {
 func TestDBService_DbetlsFilterToFilter(t *testing.T) {
 	dbFilter := Filter{
 		Mutate: Mutate{
-			Row: "_row",
-			CopyValue: []CopyValue{{From: "id", To: "_id", In: "root"}},
-			RemoveFields: RemoveFields{Field: []string{"name"}, IgnoreCase: "true"},
-			AddFields: AddFields{Field: []Field{{Key: "type", Value: "A"}}},
+			Row:             "_row",
+			CopyValue:       []CopyValue{{From: "id", To: "_id", In: "root"}},
+			RemoveFields:    RemoveFields{Field: []string{"name"}, IgnoreCase: "true"},
+			AddFields:       AddFields{Field: []Field{{Key: "type", Value: "A"}}},
 			LowercaseFields: LowercaseFields{Field: []string{"name"}, For: "value"},
 		},
 	}
@@ -84,11 +84,11 @@ func TestProcessIngestion_InvalidDSN(t *testing.T) {
 	d := newTestService(mock, f)
 
 	table := Table{
-		DatabaseName: "testdb",
-		Query:        Query{Cdata: "SELECT 1"},
-		BatchSize:    "0",
-		MaxRecords:   "-1",
-		WaitMS:       "0",
+		DBName:     "testdb",
+		Query:      Query{Cdata: "SELECT 1"},
+		BatchSize:  "0",
+		MaxRecords: "-1",
+		WaitMS:     "0",
 	}
 
 	d.processIngestion(table)
@@ -97,4 +97,3 @@ func TestProcessIngestion_InvalidDSN(t *testing.T) {
 		t.Errorf("expected 0 output calls on invalid DSN, got %d", len(mock.calls))
 	}
 }
-

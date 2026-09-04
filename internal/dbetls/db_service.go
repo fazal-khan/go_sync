@@ -11,6 +11,7 @@ import (
 	"github.com/fazal-khan/go_sync/internal/filter"
 	"github.com/fazal-khan/go_sync/internal/util"
 	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	cron "github.com/netresearch/go-cron"
 )
 
@@ -36,9 +37,9 @@ func (d *dbService) Init(*core.AppCtx) error {
 
 func (d *dbService) schedule() {
 	for _, table := range d.config.Tables {
-		d.logger.Info("scheduling table", "database_name", table.DatabaseName, "cron", table.Cron)
+		d.logger.Info("scheduling table", "database_name", table.DBName, "cron", table.Cron)
 		d.cron.AddFunc(table.Cron, func() {
-			d.logger.Info("running scheduled task for table", "database_name", table.DatabaseName)
+			d.logger.Info("running scheduled task for table", "database_name", table.DBName)
 			d.processIngestion(table)
 		}, cron.WithName(table.Name))
 	}
@@ -71,32 +72,33 @@ func NewDBService(ctx *core.AppCtx, outputter Outputter) (DBService, error) {
 }
 
 func (d *dbService) processIngestion(table Table) {
-	d.logger.Info("processing ingestion for table", "database_name", table.DatabaseName)
+	d.logger.Info("processing ingestion for table", "database_name", table.DBName)
 
-	dsn := util.Getenv(table.DatabaseName, "")
+	dsn := util.Getenv(table.DBURL, "")
+	dbtype := table.DBType
 
-	db, err := sql.Open("mysql", dsn)
+	db, err := sql.Open(dbtype, dsn)
 	if err != nil {
-		d.logger.Error("failed to open database connection", "database_name", table.DatabaseName, slog.Any("error", err))
+		d.logger.Error("failed to open database connection", "database_name", table.DBName, slog.Any("error", err))
 		return
 	}
 	defer db.Close()
 
 	if err := db.Ping(); err != nil {
-		d.logger.Error("failed to ping database", "database_name", table.DatabaseName, slog.Any("error", err))
+		d.logger.Error("failed to ping database", "database_name", table.DBName, slog.Any("error", err))
 		return
 	}
 
 	rows, err := db.Query(table.Query.Cdata)
 	if err != nil {
-		d.logger.Error("failed to execute query", "database_name", table.DatabaseName, slog.Any("error", err))
+		d.logger.Error("failed to execute query", "database_name", table.DBName, slog.Any("error", err))
 		return
 	}
 	defer rows.Close()
 
 	columns, err := rows.Columns()
 	if err != nil {
-		d.logger.Error("failed to get columns", "database_name", table.DatabaseName, slog.Any("error", err))
+		d.logger.Error("failed to get columns", "database_name", table.DBName, slog.Any("error", err))
 		return
 	}
 
@@ -109,7 +111,7 @@ func (d *dbService) processIngestion(table Table) {
 
 	for rows.Next() {
 		if maxRecords >= 0 && (maxRecords > 0 && recordCount >= maxRecords) {
-			d.logger.Info("reached max records limit", "max_records", maxRecords, "database_name", table.DatabaseName)
+			d.logger.Info("reached max records limit", "max_records", maxRecords, "database_name", table.DBName)
 			break
 		}
 
@@ -120,7 +122,7 @@ func (d *dbService) processIngestion(table Table) {
 		}
 
 		if err := rows.Scan(valuePtrs...); err != nil {
-			d.logger.Error("failed to scan row", "database_name", table.DatabaseName, slog.Any("error", err))
+			d.logger.Error("failed to scan row", "database_name", table.DBName, slog.Any("error", err))
 			continue
 		}
 
@@ -140,7 +142,7 @@ func (d *dbService) processIngestion(table Table) {
 
 		if batchSize > 0 && len(records) >= batchSize {
 			d.outputter.Output(records, table.Output)
-			d.logger.Info("processed batch", "batch_size", len(records), "database_name", table.DatabaseName)
+			d.logger.Info("processed batch", "batch_size", len(records), "database_name", table.DBName)
 			records = nil
 			if waitMS > 0 {
 				time.Sleep(time.Duration(waitMS) * time.Millisecond)
@@ -149,15 +151,15 @@ func (d *dbService) processIngestion(table Table) {
 	}
 
 	if err := rows.Err(); err != nil {
-		d.logger.Error("error iterating over rows", "database_name", table.DatabaseName, slog.Any("error", err))
+		d.logger.Error("error iterating over rows", "database_name", table.DBName, slog.Any("error", err))
 	}
 
 	if len(records) > 0 {
 		d.outputter.Output(records, table.Output)
-		d.logger.Info("processed final batch", "batch_size", len(records), "database_name", table.DatabaseName)
+		d.logger.Info("processed final batch", "batch_size", len(records), "database_name", table.DBName)
 	}
 
-	d.logger.Info("ingestion completed", "database_name", table.DatabaseName, "total_records", recordCount)
+	d.logger.Info("ingestion completed", "database_name", table.DBName, "total_records", recordCount)
 }
 
 func dbetlsFilterToFilter(f Filter) filter.Filter {

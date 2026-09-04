@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-    <table name="test_sync">
-        <database_name>test_db</database_name>
+    <table db="mysql" name="test_sync">
+        <db_type>${test_sync.db_type}</db_type>
+        <db_url>${test_sync.db_url}</db_url>
+        <db_name>${test_sync.db_name}</db_name>
         <id-column>id</id-column>
         <tracking-column>updated_at</tracking-column>
         <batch-size>50</batch-size>
