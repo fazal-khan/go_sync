@@ -73,6 +73,7 @@ type Output struct {
 type Auth struct {
 	User     string `xml:"user,attr"`
 	Password string `xml:"password,attr"`
+	Key      string `xml:"key,attr"`
 }
 
 type Result struct {

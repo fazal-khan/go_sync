@@ -36,10 +36,15 @@ func substituteConfigEnvVars(cfg *Config) {
 	for i := range cfg.Tables {
 		t := &cfg.Tables[i]
 
+		t.DBName = util.SubstituteEnvVars(t.DBName)
+		t.DBType = util.SubstituteEnvVars(t.DBType)
+		t.DBURL = util.SubstituteEnvVars(t.DBURL)
+
 		// Output fields
 		t.Output.URL = util.SubstituteEnvVars(t.Output.URL)
 		t.Output.Auth.User = util.SubstituteEnvVars(t.Output.Auth.User)
 		t.Output.Auth.Password = util.SubstituteEnvVars(t.Output.Auth.Password)
+		t.Output.Auth.Key = util.SubstituteEnvVars(t.Output.Auth.Key)
 		t.Output.Result.Cdata = util.SubstituteEnvVars(t.Output.Result.Cdata)
 
 		// Query field

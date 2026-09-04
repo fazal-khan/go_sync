@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
     <table db="mysql" name="test_sync">
-        <db_type>${test_sync.db_type}</db_type>
-        <db_url>${test_sync.db_url}</db_url>
-        <db_name>${test_sync.db_name}</db_name>
+        <db_type>${env.test_sync.db_type}</db_type>
+        <db_url>${env.test_sync.db_url}</db_url>
+        <db_name>${env.test_sync.db_name}</db_name>
         <id-column>id</id-column>
         <tracking-column>updated_at</tracking-column>
         <batch-size>50</batch-size>
@@ -52,7 +52,7 @@
         <output name="test_sync" type="api">
             <target>elasticsearch</target>
             <url>${env.test_sync.URL}</url>
-            <auth user="${env.test_sync.USER}" password="${env.test_sync.PASSWORD}" />
+            <auth user="${env.test_sync.USER}" password="${env.test_sync.PASSWORD}" key="" />
             <tls verify="false" enabled="false" />
             <skip-output>false</skip-output>
             <result bulk="true">
