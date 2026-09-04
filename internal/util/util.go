@@ -1,6 +1,8 @@
 package util
 
 import (
+	"fmt"
+	"log/slog"
 	"os"
 	"regexp"
 	"strconv"
@@ -23,20 +25,47 @@ var envVarPattern = regexp.MustCompile(`\$\{([^}]+)\}`)
 //   - ${row.*}   → left untouched (runtime row references)
 //   - Missing env vars resolve to empty string.
 func SubstituteEnvVars(s string) string {
-	return envVarPattern.ReplaceAllStringFunc(s, func(match string) string {
-		// Extract the key inside ${...}
+	val, err := substituteEnvVars(s, map[string]bool{})
+	if err != nil {
+		slog.Default().Error(err.Error())
+	}
+	return val
+}
+
+func substituteEnvVars(s string, resolving map[string]bool) (string, error) {
+	var err error
+
+	s = envVarPattern.ReplaceAllStringFunc(s, func(match string) string {
+		if err != nil {
+			return match
+		}
+
 		key := match[2 : len(match)-1]
 
-		// Leave ${row.*} untouched
+		// Leave ${row.*} untouched.
 		if strings.HasPrefix(key, "row.") {
 			return match
 		}
 
-		// remove env. prefix if present
 		envKey := strings.TrimPrefix(key, "env.")
 
-		return os.Getenv(envKey)
+		// Detect cycles.
+		if resolving[envKey] {
+			err = fmt.Errorf("cyclic environment variable reference: %s", envKey)
+			return match
+		}
+
+		value := os.Getenv(envKey)
+
+		// Resolve placeholders inside the env value.
+		resolving[envKey] = true
+		value, err = substituteEnvVars(value, resolving)
+		delete(resolving, envKey)
+
+		return value
 	})
+
+	return s, err
 }
 
 // ParseNonNegativeInt parses s as a non-negative integer, returning 0 for

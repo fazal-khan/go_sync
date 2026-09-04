@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"os"
 	"testing"
 )
@@ -132,4 +133,18 @@ func TestParseNonNegativeInt(t *testing.T) {
 			t.Errorf("ParseNonNegativeInt(%q) = %d, want %d", in, got, want)
 		}
 	}
+}
+
+func TestReplace(t *testing.T) {
+	os.Setenv("test_sync.db_name", "test_my_db")
+	url := "test_sync.db_url=username:password@tcp(127.0.0.1:3306)/${env.test_sync.db_name}?parseTime=true"
+
+	want := "test_sync.db_url=username:password@tcp(127.0.0.1:3306)/test_my_db?parseTime=true"
+	got := SubstituteEnvVars(url)
+
+	if got != want {
+		t.Errorf("SubstituteEnvVars(%s) = %s, want %s", url, got, want)
+	}
+
+	fmt.Println(got)
 }
